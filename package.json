@@ -1,0 +1,23 @@
+{
+  "name": "mongoose-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.2",
+    "nodemon": "^2.0.20",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
+  
+}
