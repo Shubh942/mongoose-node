@@ -8,7 +8,6 @@ const handleCastErrorDB = (err) => {
 const handleDuplicateFieldsDB = (err) => {
   // const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   // console.log(value);
-
   const message = `Duplicate field value. Please use another value!`;
   return new AppError(message, 400);
 };
@@ -47,14 +46,14 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || "error";
 
   let error = { ...err };
-console.log(error)
-// console.log("kerjj")
+console.log(error.errors)
+// console.log()
 // console.log("jrijrij")
   if (error.name === "CastError") error = handleCastErrorDB(error);
   if (error.code === 11000) error = handleDuplicateFieldsDB(error);
   if (error.errors) {
-    
-      if (error.errors.name.name === "ValidatorError") error = handleValidationErrorDB(error);
+    // if(error.errors.name)
+       error = handleValidationErrorDB(error);
   }
     // else error = handleValidationErrorDB(error);
   sendError(error, res);

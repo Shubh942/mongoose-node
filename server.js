@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
 
-process.on("uncaughtException", (err) => {
-  console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
-  console.log(err.name, err.message);
-  process.exit(1);
-});
+// process.on("uncaughtException", (err) => {
+//   console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
+//   console.log(err.name, err.message);
+//   process.exit(1);
+// });
 
 const database_local = "mongodb://localhost:27017/natours-test";
 
@@ -25,10 +25,10 @@ app.listen("3000", () => {
   console.log("Listining...");
 });
 
-process.on("unhandledRejection", (err) => {
-  console.log("UNHANDLED REJECTION! 💥 Shutting down...");
-  console.log(err.name, err.message);
-  server.close(() => {
-    process.exit(1);
-  });
-});
+// process.on("unhandledRejection", (err) => {
+//   console.log("UNHANDLED REJECTION! 💥 Shutting down...");
+//   console.log(err.name, err.message);
+//   server.close(() => {
+//     process.exit(1);
+//   });
+// });
