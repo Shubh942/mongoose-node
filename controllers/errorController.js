@@ -1,5 +1,5 @@
 const AppError = require("./../utils/appError");
-
+let terror;
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
@@ -13,18 +13,31 @@ const handleDuplicateFieldsDB = (err) => {
 };
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
-    // console.log("coming\n")
+  // console.log("coming\n")
   const message = `Invalid input data. ${errors.join(". ")}`;
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => {
+  console.log("hehee");
+  // console.log(err)
+  console.log("hehee2");
+  return new AppError("Invalid token! Please login again", 401);
+  // console.log(err)
+};
+
+const handleJWTExpiredError=(err)=>{
+  return new AppError("Your token is Expired! Please login again", 401);
+}
+
 const sendError = (err, res) => {
   // Operational, trusted error: send message to client
+  // console.log(err);
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
-      // error:err
+      // error: terror,
     });
 
     // Programming or other unknown error: don't leak error details
@@ -35,30 +48,64 @@ const sendError = (err, res) => {
     // 2) Send generic message
     res.status(500).json({
       status: "error",
-      error:err,
+      error: terror,
       message: `Something went very wrong!`,
     });
   }
 };
 
 module.exports = (err, req, res, next) => {
-//   console.log(err.statusCode,err.status);
+  //   console.log(err.statusCode,err.status);
+  terror = err;
+
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
   let error = { ...err };
-console.log(error)
-// console.log()
-// console.log("jrijrij")
-  if (error.name === "CastError") error = handleCastErrorDB(error);
-  if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-  if (error.errors) {
+  // console.log("start")
+  // console.log(err.name);
+  // console.log("end")
+  // console.log("jrijrij")
+  if (err.name === "CastError") error = handleCastErrorDB(error);
+  if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+  if (err.name === 'ValidationError') {
     // if(error.errors.name)
-       error = handleValidationErrorDB(error);
+    // console.log("I'm in")
+    error = handleValidationErrorDB(error);
   }
-    // else error = handleValidationErrorDB(error);
+  console.log(err)
+  if (err.name === "JsonWebTokenError") {
+    error = handleJWTError(error);
+  }
+  if (err.name === "TokenExpiredError") {
+    error = handleJWTExpiredError(error);
+  }
+  // console.log(error)
+  // console.log(err)
   sendError(error, res);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,5 +184,5 @@ console.log(error)
 //       error = handleValidationErrorDB(error);
 
 //     sendErrorProd(error, res);
-  
+
 // };
