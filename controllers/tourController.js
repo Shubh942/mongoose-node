@@ -1,7 +1,7 @@
 const Tour = require("./../model/tourmodel");
 const APIFeatures = require("./../utils/apiFeatures");
-const mongoose = require("mongoose");
 const catchAsync = require('./../utils/catchAsync');
+const mongoose = require("mongoose");
 // const { query } = require('express');
 const AppError = require('./../utils/appError');
 

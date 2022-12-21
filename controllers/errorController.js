@@ -24,6 +24,7 @@ const sendError = (err, res) => {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
+      // error:err
     });
 
     // Programming or other unknown error: don't leak error details
@@ -46,7 +47,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || "error";
 
   let error = { ...err };
-console.log(error.errors)
+console.log(error)
 // console.log()
 // console.log("jrijrij")
   if (error.name === "CastError") error = handleCastErrorDB(error);

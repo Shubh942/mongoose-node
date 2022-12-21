@@ -16,12 +16,12 @@ app.use('/api/v1/users', userRouter);
 app.all('*',(req,res,next)=>{
 
     const er=new AppError(`Can't find ${req.originalUrl} on server`,404);
-    res.status(404).json({
-        status:'fail',
-        message:`Can't find ${req.originalUrl} on server`
-    })
-    // next(er);
-    next();
+    // res.status(404).json({
+    //     status:'fail',
+    //     message:`Can't find ${req.originalUrl} on server`
+    // })
+    next(er);
+   
 });
 
 app.use(globalErrorController);
