@@ -66,12 +66,24 @@ exports.protect=catchAsync( async(req,res,next)=>{
   //User is still a active user
   const freshUser=await User.findById(decoded.id);
   if(!freshUser){
-    return new AppError('User belonging to this token does no longer exists',401);
+    return next(new AppError('User belonging to this token does no longer exists',401));
 
   }
-  //If user changed its password
   
+//Grant access to the user
+req.user=freshUser;
 
 
   next();
-})
+});
+
+exports.restrictTo=(...roles)=>{
+  return(req,res,next)=>{
+    console.log(req.user.role)
+    if(!roles.includes(req.user.role)){
+      return next(new AppError('You do not permission to perform this action',403));
+
+    }
+    next();
+  }
+}
