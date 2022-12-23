@@ -37,13 +37,13 @@ const sendError = (err, res) => {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
-      // error: terror,
+      error: terror,
     });
 
     // Programming or other unknown error: don't leak error details
   } else {
     // 1) Log error
-    console.error("ERROR 💥", err);
+    // console.error("ERROR 💥", err);
 
     // 2) Send generic message
     res.status(500).json({
@@ -57,7 +57,7 @@ const sendError = (err, res) => {
 module.exports = (err, req, res, next) => {
   //   console.log(err.statusCode,err.status);
   terror = err;
-
+console.log(err)
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
@@ -73,7 +73,7 @@ module.exports = (err, req, res, next) => {
     // console.log("I'm in")
     error = handleValidationErrorDB(error);
   }
-  console.log(err)
+  // console.log(err)
   if (err.name === "JsonWebTokenError") {
     error = handleJWTError(error);
   }
