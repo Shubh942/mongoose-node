@@ -4,6 +4,7 @@ const catchAsync = require('./../utils/catchAsync');
 const mongoose = require("mongoose");
 // const { query } = require('express');
 const AppError = require('./../utils/appError');
+const factory=require('./handlFactory');
 
 function sortByProperty(property) {
   return function (a, b) {
@@ -193,24 +194,28 @@ exports.updateTour =catchAsync( async (req, res) => {
   // }
 });
 
-exports.deleteTour =catchAsync( async (req, res,next) => {
-  // try {
-   const tour= await Tour.findByIdAndDelete(req.params.id);
-    console.log(req.params.id);
-    if (!tour) {
-      return next(new AppError('No tour found with that ID', 404));
-    }
-    res.status(204).json({
-      status: "success",
-      data: null,
-    });
-  // } catch (err) {
-  //   res.status(404).json({
-  //     status: "fail",
-  //     message: err,
-  //   });
-  // }
-});
+
+exports.deleteTour=factory.deleteOne(Tour);
+
+
+// exports.deleteTour =catchAsync( async (req, res,next) => {
+//   // try {
+//    const tour= await Tour.findByIdAndDelete(req.params.id);
+//     console.log(req.params.id);
+//     if (!tour) {
+//       return next(new AppError('No tour found with that ID', 404));
+//     }
+//     res.status(204).json({
+//       status: "success",
+//       data: null,
+//     });
+//   // } catch (err) {
+//   //   res.status(404).json({
+//   //     status: "fail",
+//   //     message: err,
+//   //   });
+//   // }
+// });
 
 exports.getTourStats = async (req, res) => {
   try {

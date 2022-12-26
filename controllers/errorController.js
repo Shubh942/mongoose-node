@@ -37,7 +37,7 @@ const sendError = (err, res) => {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
-      error: terror,
+      // error: terror,
     });
 
     // Programming or other unknown error: don't leak error details
