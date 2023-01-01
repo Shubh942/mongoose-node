@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 // const { query } = require('express');
 const AppError = require('./../utils/appError');
 const factory=require('./handlFactory');
+const Review = require("../model/reviewModel");
 
 function sortByProperty(property) {
   return function (a, b) {
@@ -264,6 +265,94 @@ exports.getTourStats = async (req, res) => {
     });
   }
 };
+
+// exports.reviewOfOneTour=catchAsync(async(req,res,next)=>{
+//   const tourId=req.params.id ;
+//   const tour=Tour.findById(tourId);
+//   if (!tour) {
+//     return next(new AppError('No user found on this Id',401));
+
+//   }
+//   const rev=Review.findOne({tour:tourId})
+//   res.status(201).json({
+//     status:'sucess',
+//     length:rev.length,
+//     body:{
+//       data:rev
+//     }
+//   })
+
+// })
+
+
+// /tours-within/:distance/center/:latlng/unit/:unit
+// /tours-within/233/center/34.111745,-118.113491/unit/mi
+
+exports.getToursWithin=catchAsync(async(req,res,next)=>{
+  const {distance,latlng,unit}=req.params;
+  const [lat,lng]=latlng.split(',');
+  const radius= unit==='mi'? distance/3963.2 : distance/6378.1;
+
+  console.log(distance,lat,lng,radius)
+  if(!lat || !lng){
+    next(new AppError('Please provide latitude and longitude in formate of lat,lng',400));
+
+  }
+  const tours=await Tour.find({
+    startLocation:{$geoWithin:{$centerSphere:[[lng,lat],radius]}}
+  });
+  res.status(200).json({
+    status:'sucess',
+    results:tours.length,
+    data:{
+      data:tours
+    }
+  })
+})
+
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitutr and longitude in the format lat,lng.',
+        400
+      )
+    );
+  }
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1]
+        },
+        //add new field distance
+        distanceField: 'distance',
+        distanceMultiplier: multiplier
+      }
+    },
+    //Only those field needed
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: distances
+    }
+  });
+});
 
 exports.getMonthlyPlan = async (req, res) => {
   const year = req.params.year * 1;

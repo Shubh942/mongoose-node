@@ -80,9 +80,9 @@ console.log(err)
   if (err.name === "TokenExpiredError") {
     error = handleJWTExpiredError(error);
   }
-  if (err.name==="TypeError") {
-    error= new AppError("ok", 401);
-  }
+  // if (err.name==="TypeError") {
+  //   error= new AppError("ok", 401);
+  // }
   // console.log(error)
   // console.log(err)
   sendError(error, res);

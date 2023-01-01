@@ -15,9 +15,9 @@ mongoose.set("strictQuery", true);
 
 mongoose
   .connect(database_local, {
-    // useNewUrlParser:true,
-    // useCreateIndex:true,
-    // useFindAndModify:false
+    useNewUrlParser:true,
+    useCreateIndex:true,
+    useFindAndModify:false
   })
   .then(() => console.log(`Connection sucessfully`));
 
