@@ -10,9 +10,16 @@ const hpp = require("hpp");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const viewRouter = require("./routes/viewRoutes");
 const AppError = require("./utils/appError");
 const globalErrorController = require("./controllers/errorController");
 const app = express();
+
+
+app.set('view engine','pug');
+app.set('views',path.join(__dirname,'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const limiter = rateLimit({
   max: 100,
@@ -41,9 +48,16 @@ app.use(
   })
 );
 
+// app.get('/',(req,res)=>{
+//   res.render('base',{
+//     title:'kooko'
+//   })
+// })
+
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/", viewRouter);
 
 app.all("*", (req, res, next) => {
   const er = new AppError(`Can't find ${req.originalUrl} on server`, 404);
