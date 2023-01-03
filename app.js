@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cookieParser=require('cookie-parser');
 
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
@@ -20,6 +21,7 @@ app.set('view engine','pug');
 app.set('views',path.join(__dirname,'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/js')));
 
 const limiter = rateLimit({
   max: 100,
@@ -30,6 +32,7 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use("/api", limiter);
 app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
 //prevent nosql injection
 app.use(mongoSanitize());
 //prevent client side xss
