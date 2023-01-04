@@ -30,28 +30,35 @@ const handleJWTExpiredError=(err)=>{
   return new AppError("Your token is Expired! Please login again", 401);
 }
 
-const sendError = (err, res) => {
-  // Operational, trusted error: send message to client
-  // console.log(err);
+const sendError = (err,req, res) => {
+  
+  // if (req.originalUrl.startsWith('/api')) {
+  //   if (err.isOperational) {
+  //     return res.status(err.statusCode).json({
+  //       status: err.status,
+  //       message: err.message
+  //     });
+  //   }
+    
+  //   console.error('ERROR 💥', err);
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     message: 'Something went very wrong!'
+  //   });
+  // }
+
   if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-      // error: terror,
-    });
-
-    // Programming or other unknown error: don't leak error details
-  } else {
-    // 1) Log error
-    // console.error("ERROR 💥", err);
-
-    // 2) Send generic message
-    res.status(500).json({
-      status: "error",
-      error: terror,
-      message: `Something went very wrong!`,
+    console.log(err.message)
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message
     });
   }
+  console.error('ERROR 💥', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.'
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -66,26 +73,27 @@ console.log(err)
   // console.log(err.name);
   // console.log("end")
   // console.log("jrijrij")
+  error.message=err.message
   if (err.name === "CastError") error = handleCastErrorDB(error);
   if (err.code === 11000) error = handleDuplicateFieldsDB(error);
   if (err.name === 'ValidationError') {
     // if(error.errors.name)
     // console.log("I'm in")
-    error = handleValidationErrorDB(error);
+    err = handleValidationErrorDB(error);
   }
   // console.log(err)
   if (err.name === "JsonWebTokenError") {
-    error = handleJWTError(error);
+    err = handleJWTError(error);
   }
   if (err.name === "TokenExpiredError") {
-    error = handleJWTExpiredError(error);
+    err = handleJWTExpiredError(error);
   }
   // if (err.name==="TypeError") {
   //   error= new AppError("ok", 401);
   // }
   // console.log(error)
   // console.log(err)
-  sendError(error, res);
+  sendError(err,req, res);
 };
 
 
