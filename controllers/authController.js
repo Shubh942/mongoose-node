@@ -3,7 +3,7 @@ const catchAsync = require("./../utils/catchAsync");
 const User = require("./../model/usermodel");
 const jwt = require("jsonwebtoken");
 const AppError = require("./../utils/appError");
-const sendEmail = require("./../utils/email");
+const Email = require("./../utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id }, "mysecretkey", {
@@ -45,6 +45,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     photo:req.body.photo,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword});
+
+    const url = `${req.protocol}://${req.get('host')}/me`;
+  // console.log(url);
+  await new Email(newUser, url).sendWelcome();
   createSendToken(newUser, 201, res);
 });
 

@@ -1,12 +1,12 @@
 const Tour = require("./../model/tourmodel");
-const APIFeatures = require("./../utils/apiFeatures");
+const factory=require('./handlFactory');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
+const APIFeatures = require("./../utils/apiFeatures");
 const mongoose = require("mongoose");
 // const multer=require('multer');
 // const sharp=require('sharp');
 // const { query } = require('express');
-const AppError = require('./../utils/appError');
-const factory=require('./handlFactory');
 const Review = require("../model/reviewModel");
 
 function sortByProperty(property) {

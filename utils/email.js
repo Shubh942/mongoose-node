@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const pug = require("pug");
-const htmlToText=require('html-to-text');
+const {convert}=require('html-to-text');
 // new Email(user,url).send
 
 module.exports = class Email {
@@ -10,7 +10,7 @@ module.exports = class Email {
     this.url = url;
     this.from = `Shubh Mehta <shubhmehta837@gmail.com>`;
   }
-  createTransport() {
+  newTransport() {
     return nodemailer.createTransport({
       service: "smtp.mailtrap.io",
       port: "25",
@@ -34,7 +34,7 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.fromString(html),
+      text: html,
     };
 
     // 3) Create a transport and send email

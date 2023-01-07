@@ -32,20 +32,20 @@ const handleJWTExpiredError=(err)=>{
 
 const sendError = (err,req, res) => {
   
-  // if (req.originalUrl.startsWith('/api')) {
-  //   if (err.isOperational) {
-  //     return res.status(err.statusCode).json({
-  //       status: err.status,
-  //       message: err.message
-  //     });
-  //   }
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
+      });
+    }
     
-  //   console.error('ERROR 💥', err);
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     message: 'Something went very wrong!'
-  //   });
-  // }
+    // console.error('ERROR 💥', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Something went very wrong!'
+    });
+  }
 
   if (err.isOperational) {
     console.log(err.message)
@@ -70,12 +70,12 @@ console.log(err)
 
   let error = { ...err };
   // console.log("start")
-  // console.log(err.name);
+  // console.log(err);
   // console.log("end")
   // console.log("jrijrij")
   error.message=err.message
-  if (err.name === "CastError") error = handleCastErrorDB(error);
-  if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+  if (err.name === "CastError") err = handleCastErrorDB(error);
+  if (err.code === 11000) err = handleDuplicateFieldsDB(error);
   if (err.name === 'ValidationError') {
     // if(error.errors.name)
     // console.log("I'm in")
