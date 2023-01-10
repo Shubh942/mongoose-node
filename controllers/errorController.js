@@ -26,45 +26,44 @@ const handleJWTError = () => {
   // console.log(err)
 };
 
-const handleJWTExpiredError=(err)=>{
+const handleJWTExpiredError = (err) => {
   return new AppError("Your token is Expired! Please login again", 401);
-}
+};
 
-const sendError = (err,req, res) => {
-  
-  if (req.originalUrl.startsWith('/api')) {
+const sendError = (err, req, res) => {
+  if (req.originalUrl.startsWith("/api")) {
     if (err.isOperational) {
       return res.status(err.statusCode).json({
         status: err.status,
-        message: err.message
+        message: err.message,
       });
     }
-    
+
     // console.error('ERROR 💥', err);
     return res.status(500).json({
-      status: 'error',
-      message: 'Something went very wrong!'
+      status: "error",
+      message: "Something went very wrong!",
     });
   }
 
   if (err.isOperational) {
-    console.log(err.message)
-    return res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
-      msg: err.message
+    console.log(err.message);
+    return res.status(err.statusCode).render("error", {
+      title: "Something went wrong!",
+      msg: err.message,
     });
   }
-  console.error('ERROR 💥', err);
-  return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
-    msg: 'Please try again later.'
+  console.error("ERROR 💥", err);
+  return res.status(err.statusCode).render("error", {
+    title: "Something went wrong!",
+    msg: "Please try again later.",
   });
 };
 
 module.exports = (err, req, res, next) => {
   //   console.log(err.statusCode,err.status);
   terror = err;
-console.log(err)
+  console.log(err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
@@ -73,10 +72,10 @@ console.log(err)
   // console.log(err);
   // console.log("end")
   // console.log("jrijrij")
-  error.message=err.message
+  error.message = err.message;
   if (err.name === "CastError") err = handleCastErrorDB(error);
   if (err.code === 11000) err = handleDuplicateFieldsDB(error);
-  if (err.name === 'ValidationError') {
+  if (err.name === "ValidationError") {
     // if(error.errors.name)
     // console.log("I'm in")
     err = handleValidationErrorDB(error);
@@ -93,39 +92,8 @@ console.log(err)
   // }
   // console.log(error)
   // console.log(err)
-  sendError(err,req, res);
+  sendError(err, req, res);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // const AppError = require('./../utils/appError');
 
